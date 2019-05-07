@@ -1,11 +1,5 @@
 ## shadowsocks
 
-![](https://img.shields.io/docker/stars/mritd/shadowsocks.svg) ![](https://img.shields.io/docker/pulls/mritd/shadowsocks.svg) ![](https://img.shields.io/microbadger/image-size/mritd/shadowsocks.svg) ![](https://img.shields.io/microbadger/layers/mritd/shadowsocks.svg)
-
-- **shadowsocks-libev 版本: 3.2.5**
-- **kcptun 版本: 20190409**
-
-**注意: 由于 Docker Hub 自动构建功能最近出现的 Bug 比较多，构建队列缓慢；部分镜像(包含本镜像)可能会在采用本地 Build 然后直接 push 到远程仓库的方式构建；如有安全疑虑，可自行实用本 Dockerfile 构建**
 
 ### 打开姿势
 
@@ -36,26 +30,26 @@ docker run -dt --name ss -p 6443:6443 mritd/shadowsocks -s "-s 0.0.0.0 -p 6443 -
 **Server 端**
 
 ``` sh
-docker run -dt --name ssserver -p 6443:6443 -p 6500:6500/udp mritd/shadowsocks -m "ss-server" -s "-s 0.0.0.0 -p 6443 -m chacha20-ietf-poly1305 -k test123" -x -e "kcpserver" -k "-t 127.0.0.1:6443 -l :6500 -mode fast2"
+docker run -dt --name ssserver -p 6443:6443 -p 6500:6500/udp tzion/shadowsocks -m "ss-server" -s "-s 0.0.0.0 -p 6443 -m aes-256-gcm -k test123" -x -e "kcpserver" -k "-t 127.0.0.1:6443 -l :6500 -mode fast3"
 ```
 
 **以上命令相当于执行了**
 
 ``` sh
-ss-server -s 0.0.0.0 -p 6443 -m chacha20-ietf-poly1305 -k test123
+ss-server -s 0.0.0.0 -p 6443 -m aes-256-gcm -k test123
 kcpserver -t 127.0.0.1:6443 -l :6500 -mode fast2
 ```
 
 **Client 端**
 
 ``` sh
-docker run -dt --name ssclient -p 1080:1080 mritd/shadowsocks -m "ss-local" -s "-s 127.0.0.1 -p 6500 -b 0.0.0.0 -l 1080 -m chacha20-ietf-poly1305 -k test123" -x -e "kcpclient" -k "-r SSSERVER_IP:6500 -l :6500 -mode fast2"
+docker run -dt --name ssclient -p 1080:1080 mritd/shadowsocks -m "ss-local" -s "-s 127.0.0.1 -p 6500 -b 0.0.0.0 -l 1080 -m aes-256-gcm -k test123" -x -e "kcpclient" -k "-r SSSERVER_IP:6500 -l :6500 -mode fast2"
 ```
 
 **以上命令相当于执行了**
 
 ``` sh
-ss-local -s 127.0.0.1 -p 6500 -b 0.0.0.0 -l 1080 -m chacha20-ietf-poly1305 -k test123
+ss-local -s 127.0.0.1 -p 6500 -b 0.0.0.0 -l 1080 -m aes-256-gcm -k test123
 kcpclient -r SSSERVER_IP:6500 -l :6500 -mode fast2
 ```
 
@@ -80,7 +74,7 @@ kcpclient -r SSSERVER_IP:6500 -l :6500 -mode fast2
 使用时可指定环境变量，如下
 
 ``` sh
-docker run -dt --name ss -p 6443:6443 -p 6500:6500/udp -e SS_CONFIG="-s 0.0.0.0 -p 6443 -m chacha20-ietf-poly1305 -k test123" -e KCP_MODULE="kcpserver" -e KCP_CONFIG="-t 127.0.0.1:6443 -l :6500 -mode fast2" -e KCP_FLAG="true" mritd/shadowsocks
+docker run -dt --name ss -p 6443:6443 -p 6500:6500/udp -e SS_CONFIG="-s 0.0.0.0 -p 6443 -m aes-256-gcm -k test123" -e KCP_MODULE="kcpserver" -e KCP_CONFIG="-t 127.0.0.1:6443 -l :6500 -mode fast2" -e KCP_FLAG="true" mritd/shadowsocks
 ```
 
 ### 容器平台说明
